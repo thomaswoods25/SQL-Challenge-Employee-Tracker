@@ -12,13 +12,12 @@ class DB {
     employeeId
 
   );
+ }
   // Find all employees
   findAllEmployees() {
     return this.connection.query(
       "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
     );
-  }
-
   }
 
   // Create a new employee
@@ -40,6 +39,7 @@ class DB {
       "UPDATE employee SET manager_id = ? WHERE id = ?",
       [managerId, employeeId]
     );
+  }
 
 
   // Update employee's role
@@ -48,8 +48,6 @@ class DB {
       "UPDATE employee SET role_id = ? WHERE id = ?",
       [roleId, employeeId]
     );
-  }
-
   }
 
   // Find all roles, join with departments to display the department name
@@ -95,6 +93,7 @@ class DB {
         "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
         managerId
       );
+    }
 
   // Find all employees in a given department
   findAllEmployeesByDepartment(departmentId) {
@@ -103,8 +102,8 @@ class DB {
       departmentId
     );
   }
-
-  }
 }
 
 module.exports = new DB(connection);
+
+
