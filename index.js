@@ -4,12 +4,12 @@ const db = require("./Main/db");
 require("console.table");
 init();
 
-function init() {
+async function init() {
   const logoText = logo({ name: "Employee Manager" }).render();
 
   console.log(logoText);
 
-  loadMainPrompts();
+  await loadMainPrompts();
 }
 
 async function loadMainPrompts() {
@@ -78,7 +78,7 @@ async function loadMainPrompts() {
       ]
     }
   ]);
-
+console.log(choice)
   switch (choice) {
     case "VIEW_EMPLOYEES":
       return viewEmployees();
