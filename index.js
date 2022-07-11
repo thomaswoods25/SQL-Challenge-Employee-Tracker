@@ -4,7 +4,6 @@ const db = require("./Main/db");
 require("console.table");
 init();
 
-// Display logo text, load main prompts
 function init() {
   const logoText = logo({ name: "Employee Manager" }).render();
 
@@ -80,7 +79,6 @@ async function loadMainPrompts() {
     }
   ]);
 
-  // Call the appropriate function depending on what the user chose
   switch (choice) {
     case "VIEW_EMPLOYEES":
       return viewEmployees();

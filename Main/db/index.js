@@ -1,11 +1,17 @@
 const connection = require("./connection");
 
 class DB {
-  // Keeping a reference to the connection on the class
   constructor(connection) {
     this.connection = connection;
   }
 
+ // Find all employees except given employee id
+ findAllPossibleManagers(employeeId) {
+  return this.connection.query(
+    "SELECT id, first_name, last_name FROM employee WHERE id != ?",
+    employeeId
+
+  );
   // Find all employees
   findAllEmployees() {
     return this.connection.query(
@@ -13,12 +19,6 @@ class DB {
     );
   }
 
-  // Find all employees except given employee id
-  findAllPossibleManagers(employeeId) {
-    return this.connection.query(
-      "SELECT id, first_name, last_name FROM employee WHERE id != ?",
-      employeeId
-    );
   }
 
   // Create a new employee
@@ -34,6 +34,14 @@ class DB {
     );
   }
 
+  // Update employee's manager
+  updateEmployeeManager(employeeId, managerId) {
+    return this.connection.query(
+      "UPDATE employee SET manager_id = ? WHERE id = ?",
+      [managerId, employeeId]
+    );
+
+
   // Update employee's role
   updateEmployeeRole(employeeId, roleId) {
     return this.connection.query(
@@ -42,12 +50,6 @@ class DB {
     );
   }
 
-  // Update employee's manager
-  updateEmployeeManager(employeeId, managerId) {
-    return this.connection.query(
-      "UPDATE employee SET manager_id = ? WHERE id = ?",
-      [managerId, employeeId]
-    );
   }
 
   // Find all roles, join with departments to display the department name
@@ -87,6 +89,13 @@ class DB {
     );
   }
 
+    // Find all employees by manager
+    findAllEmployeesByManager(managerId) {
+      return this.connection.query(
+        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
+        managerId
+      );
+
   // Find all employees in a given department
   findAllEmployeesByDepartment(departmentId) {
     return this.connection.query(
@@ -95,12 +104,6 @@ class DB {
     );
   }
 
-  // Find all employees by manager
-  findAllEmployeesByManager(managerId) {
-    return this.connection.query(
-      "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
-      managerId
-    );
   }
 }
 

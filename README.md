@@ -6,7 +6,7 @@ Developers are often tasked with creating interfaces that make it easy for non-d
 
 Design the following database schema containing three tables:
 
-![Database Schema](Assets/12-sql-homework-video-thumbnail.png)
+![Database Schema](Assets/12-sql-homework-demo-01.png)
 
 ![Employee Tracker](Assets/12-sql-homework-video-thumbnail.png)
 
