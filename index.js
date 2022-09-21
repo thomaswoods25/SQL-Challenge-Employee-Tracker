@@ -1,15 +1,17 @@
 const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
-const db = require("./Main/db");
+const db = require("./db");
 require("console.table");
+
 init();
 
-async function init() {
+// Display logo text, load main prompts
+function init() {
   const logoText = logo({ name: "Employee Manager" }).render();
 
   console.log(logoText);
 
-  await loadMainPrompts();
+  loadMainPrompts();
 }
 
 async function loadMainPrompts() {
@@ -78,7 +80,8 @@ async function loadMainPrompts() {
       ]
     }
   ]);
-console.log(choice)
+
+  // Call the appropriate function depending on what the user chose
   switch (choice) {
     case "VIEW_EMPLOYEES":
       return viewEmployees();
@@ -113,6 +116,7 @@ console.log(choice)
 
 async function viewEmployees() {
   const employees = await db.findAllEmployees();
+
   console.log("\n");
   console.table(employees);
 
@@ -121,6 +125,7 @@ async function viewEmployees() {
 
 async function viewEmployeesByDepartment() {
   const departments = await db.findAllDepartments();
+
   const departmentChoices = departments.map(({ id, name }) => ({
     name: name,
     value: id
@@ -136,6 +141,7 @@ async function viewEmployeesByDepartment() {
   ]);
 
   const employees = await db.findAllEmployeesByDepartment(departmentId);
+
   console.log("\n");
   console.table(employees);
 
@@ -144,6 +150,7 @@ async function viewEmployeesByDepartment() {
 
 async function viewEmployeesByManager() {
   const managers = await db.findAllEmployees();
+
   const managerChoices = managers.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -157,18 +164,23 @@ async function viewEmployeesByManager() {
       choices: managerChoices
     }
   ]);
+
   const employees = await db.findAllEmployeesByManager(managerId);
+
   console.log("\n");
+
   if (employees.length === 0) {
     console.log("The selected employee has no direct reports");
   } else {
     console.table(employees);
   }
+
   loadMainPrompts();
 }
 
 async function removeEmployee() {
   const employees = await db.findAllEmployees();
+
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -184,12 +196,15 @@ async function removeEmployee() {
   ]);
 
   await db.removeEmployee(employeeId);
+
   console.log("Removed employee from the database");
+
   loadMainPrompts();
 }
 
 async function updateEmployeeRole() {
   const employees = await db.findAllEmployees();
+
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -205,6 +220,7 @@ async function updateEmployeeRole() {
   ]);
 
   const roles = await db.findAllRoles();
+
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
     value: id
@@ -228,6 +244,7 @@ async function updateEmployeeRole() {
 
 async function updateEmployeeManager() {
   const employees = await db.findAllEmployees();
+
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -243,6 +260,7 @@ async function updateEmployeeManager() {
   ]);
 
   const managers = await db.findAllPossibleManagers(employeeId);
+
   const managerChoices = managers.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -267,6 +285,7 @@ async function updateEmployeeManager() {
 
 async function viewRoles() {
   const roles = await db.findAllRoles();
+
   console.log("\n");
   console.table(roles);
 
@@ -275,6 +294,7 @@ async function viewRoles() {
 
 async function addRole() {
   const departments = await db.findAllDepartments();
+
   const departmentChoices = departments.map(({ id, name }) => ({
     name: name,
     value: id
@@ -306,6 +326,7 @@ async function addRole() {
 
 async function removeRole() {
   const roles = await db.findAllRoles();
+
   const roleChoices = roles.map(({ id, title }) => ({
     name: title,
     value: id
@@ -330,6 +351,7 @@ async function removeRole() {
 
 async function viewDepartments() {
   const departments = await db.findAllDepartments();
+
   console.log("\n");
   console.table(departments);
 
@@ -343,13 +365,17 @@ async function addDepartment() {
       message: "What is the name of the department?"
     }
   ]);
+
   await db.createDepartment(department);
+
   console.log(`Added ${department.name} to the database`);
+
   loadMainPrompts();
 }
 
 async function removeDepartment() {
   const departments = await db.findAllDepartments();
+
   const departmentChoices = departments.map(({ id, name }) => ({
     name: name,
     value: id
@@ -362,14 +388,18 @@ async function removeDepartment() {
       "Which department would you like to remove? (Warning: This will also remove associated roles and employees)",
     choices: departmentChoices
   });
+
   await db.removeDepartment(departmentId);
+
   console.log(`Removed department from the database`);
+
   loadMainPrompts();
 }
 
 async function addEmployee() {
   const roles = await db.findAllRoles();
   const employees = await db.findAllEmployees();
+
   const employee = await prompt([
     {
       name: "first_name",
@@ -394,6 +424,7 @@ async function addEmployee() {
   });
 
   employee.role_id = roleId;
+
   const managerChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
     value: id
@@ -408,12 +439,16 @@ async function addEmployee() {
   });
 
   employee.manager_id = managerId;
+
   await db.createEmployee(employee);
+
   console.log(
     `Added ${employee.first_name} ${employee.last_name} to the database`
   );
+
   loadMainPrompts();
 }
+
 function quit() {
   console.log("Goodbye!");
   process.exit();
